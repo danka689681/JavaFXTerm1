@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -19,8 +20,8 @@ import java.text.DecimalFormat;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage window) throws IOException {
-        window.setHeight(300);
-        window.setWidth(300);
+        window.setHeight(500);
+        window.setWidth(500);
         DecimalFormat df2 = new DecimalFormat(".##");
 
         // Login
@@ -30,26 +31,41 @@ public class HelloApplication extends Application {
         gridPane.setHgap(8); // Horizontal spacing between grid items
         gridPane.setAlignment(Pos.CENTER);
 
-        Label euroLabel = new Label("Amount €:");
-        TextField euroValue = new TextField();
-        Label dollarLabel = new Label("Dollar $:");
-        Label dollarValue = new Label();
-        Button convertBtn = new Button("Convert Euro to Dollar");
-
+        Label daysRentedLabel = new Label("Number of days rented:");
+        TextField daysRentedValue = new TextField();
+        Label kmDrivenLabel = new Label("Number of kilomerters driven:");
+        TextField kmDrivenValue = new TextField();
+        CheckBox checkBox = new CheckBox("Fuel tank not full when returned");
+        Label numLitersLabel = new Label("Number of liters:");
+        TextField numLitersValue = new TextField();
+        Button calculateBtn = new Button("Calculate payment");
+        Label resultLabel = new Label("Amount due:");
+        Label resultValue = new Label();
         // styling
-        gridPane.add(euroLabel, 0, 0);
-        gridPane.add(euroValue, 1, 0);
+        gridPane.add(daysRentedLabel, 0, 0);
+        gridPane.add(daysRentedValue, 1, 0);
+        gridPane.add(kmDrivenLabel, 0, 1);
+        gridPane.add(kmDrivenValue, 1,1);
+        gridPane.add(checkBox, 0,2);
 
-        gridPane.add(convertBtn, 1, 1);
+        gridPane.add(numLitersLabel, 0, 3);
+        gridPane.add(numLitersValue, 1, 3);
+        gridPane.add(calculateBtn, 1, 4);
+        gridPane.add(resultLabel, 0, 5);
+        gridPane.add(resultValue, 1, 5);
 
-        gridPane.add(dollarLabel, 0, 2);
-        gridPane.add(dollarValue, 1, 2);
-
-        convertBtn.setOnAction(new EventHandler<ActionEvent>() {
+        calculateBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                double result = Double.parseDouble(euroValue.getText()) * 1.18;
-                dollarValue.setText(String.valueOf(df2.format(result)));
+            int days = Integer.parseInt(daysRentedValue.getText());
+            int pricePerDay = 45;
+            double kmDriven = Double.parseDouble(kmDrivenValue.getText());
+            double kmToPay = kmDriven - 100;
+            double numLiters = Double.parseDouble(numLitersValue.getText());
+            double extraKm = 0.25;
+            double result = days * pricePerDay + (kmToPay > 0 ? kmToPay * extraKm : 0) + (checkBox.isSelected() ? numLiters*2 : 0);
+            resultValue.setText(String.valueOf(df2.format(result)));
+
             }
         });
 
